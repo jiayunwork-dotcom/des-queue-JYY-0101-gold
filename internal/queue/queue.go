@@ -42,6 +42,9 @@ func NewFIFO(cap int) *FIFO {
 
 // Enqueue 入队。
 func (f *FIFO) Enqueue(c Customer) error {
+	if f.cap > 0 && len(f.buf) >= f.cap {
+		return ErrFull
+	}
 	f.buf = append(f.buf, c)
 	return nil
 }
@@ -60,7 +63,7 @@ func (f *FIFO) Dequeue() (Customer, error) {
 func (f *FIFO) Len() int { return len(f.buf) }
 
 // IsFull 是否已满。
-func (f *FIFO) IsFull() bool { return false }
+func (f *FIFO) IsFull() bool { return f.cap > 0 && len(f.buf) >= f.cap }
 
 // IsEmpty 是否为空。
 func (f *FIFO) IsEmpty() bool { return len(f.buf) == 0 }
